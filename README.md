@@ -2,6 +2,8 @@
 
 ## Sobre o projeto
 
+Implementando práticas de clean code e Domain-Driven Design (DDD) no desenvolvimento do backend para otimizar a qualidade e manutenção do código.
+
 ### DDD (Domain-drive design)
 
 Design dirigido á domínio
