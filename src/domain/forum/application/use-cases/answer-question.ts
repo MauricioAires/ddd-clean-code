@@ -1,12 +1,19 @@
-import { UniqueEntityId } from '@/core/entities/unique-entity-id'
+import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { Answer } from '@/domain/forum/enterprise/entities/answer'
 import { AnswersRepository } from '../repositories/answers-repository'
+import { Either, right } from '@/core/either'
 
 interface AnswerQuestionUseCaseRequest {
   instructorId: string
   questionId: string
   content: string
 }
+type AnswerQuestionUseCaseResponse = Either<
+  null,
+  {
+    answer: Answer
+  }
+>
 
 // DRY - Don't	Repeat Yourself (3x considerar refatorar)
 export class AnswerQuestionUseCase {
@@ -15,15 +22,15 @@ export class AnswerQuestionUseCase {
     instructorId,
     questionId,
     content,
-  }: AnswerQuestionUseCaseRequest) {
+  }: AnswerQuestionUseCaseRequest): Promise<AnswerQuestionUseCaseResponse> {
     const answer = Answer.create({
-      authorId: new UniqueEntityId(instructorId),
-      questionId: new UniqueEntityId(questionId),
+      authorId: new UniqueEntityID(instructorId),
+      questionId: new UniqueEntityID(questionId),
       content,
     })
 
-    this.answerRepository.create(answer)
+    await this.answerRepository.create(answer)
 
-    return answer
+    return right({ answer })
   }
 }
