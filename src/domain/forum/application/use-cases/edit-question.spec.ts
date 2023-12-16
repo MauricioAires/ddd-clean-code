@@ -1,17 +1,27 @@
 import { InMemoryQuestionsRepository } from '@/test/repositories/in-memory-question-repository'
 import { makeQuestion } from '@/test/factories/make-question'
+import { InMemoryQuestionAttachmentsRepository } from '@/test/repositories/in-memory-question-attachments-repository'
+import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 
 import { EditQuestionUseCase } from './edit-question'
-import { UniqueEntityID } from '@/core/entities/unique-entity-id'
-import { NotAllowedError } from './errors/not-allowed-error'
+import { NotAllowedError } from '../../../../core/errors/errors/not-allowed-error'
+import { makeQuestionAttachment } from '@/test/factories/make-question-attachment'
 
 let inMemoryQuestionRepository: InMemoryQuestionsRepository
+let inMemoryQuestionAttachmentsRepository: InMemoryQuestionAttachmentsRepository
 let sut: EditQuestionUseCase
 
 describe('Edit Question', () => {
   beforeEach(() => {
-    inMemoryQuestionRepository = new InMemoryQuestionsRepository()
-    sut = new EditQuestionUseCase(inMemoryQuestionRepository)
+    inMemoryQuestionAttachmentsRepository =
+      new InMemoryQuestionAttachmentsRepository()
+    inMemoryQuestionRepository = new InMemoryQuestionsRepository(
+      inMemoryQuestionAttachmentsRepository,
+    )
+    sut = new EditQuestionUseCase(
+      inMemoryQuestionRepository,
+      inMemoryQuestionAttachmentsRepository,
+    )
   })
 
   it('should be able to edit a question', async () => {
@@ -23,19 +33,44 @@ describe('Edit Question', () => {
     )
 
     await inMemoryQuestionRepository.create(newQuestion)
+    inMemoryQuestionAttachmentsRepository.items.push(
+      makeQuestionAttachment({
+        questionId: newQuestion.id,
+        attachmentId: new UniqueEntityID('attachment-1'),
+      }),
+    )
+    inMemoryQuestionAttachmentsRepository.items.push(
+      makeQuestionAttachment({
+        questionId: newQuestion.id,
+        attachmentId: new UniqueEntityID('attachment-2'),
+      }),
+    )
 
     await sut.execute({
       authorId: 'author-1',
       questionId: 'question-1',
       content: 'Pergunta Test',
       title: 'Conteúdo test',
+      attachmentsIds: ['attachment-1', 'attachment-3'],
     })
 
-    expect(inMemoryQuestionRepository.items).toHaveLength(1)
     expect(inMemoryQuestionRepository.items[0]).toMatchObject({
       content: 'Pergunta Test',
       title: 'Conteúdo test',
     })
+    expect(
+      inMemoryQuestionRepository.items[0].attachments.currentItems,
+    ).toHaveLength(2)
+    expect(
+      inMemoryQuestionRepository.items[0].attachments.currentItems,
+    ).toEqual([
+      expect.objectContaining({
+        attachmentId: new UniqueEntityID('attachment-1'),
+      }),
+      expect.objectContaining({
+        attachmentId: new UniqueEntityID('attachment-3'),
+      }),
+    ])
   })
 
   it('should not be able to edit a question from another user', async () => {
@@ -53,6 +88,7 @@ describe('Edit Question', () => {
       questionId: 'question-1',
       content: 'Pergunta Test',
       title: 'Conteúdo test',
+      attachmentsIds: [],
     })
     expect(result.isLeft()).toBe(true)
     expect(result.value).toBeInstanceOf(NotAllowedError)
