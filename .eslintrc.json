@@ -7,7 +7,9 @@
     /// Permitir criar constructor sem propriedades dentro do objeto {}
     "no-useless-constructor": "off",
     // Permitir criar interfaces com objeto vazio {}
-    "@typescript-eslint/no-empty-interface": "off"
+    "@typescript-eslint/no-empty-interface": "off",
+    // Permitir criar funções com objeto vazio {}
+    "@typescript-eslint/no-empty-function": "off"
   },
   "env": {
     "vitest-globals/env": true
