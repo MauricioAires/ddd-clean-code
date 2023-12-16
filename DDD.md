@@ -71,3 +71,38 @@ Eventos de domínio são importantes porque permitem que diferentes partes do si
 ## Aggregate Root
 
 ## Watched List
+
+## Subdomínios
+
+## Core
+
+O que dá dinheiro
+
+## Supporting
+
+Dá suporte para o core funcionar
+
+## Generic
+
+Você precisa, mas não são tão importantes
+
+### Examples
+
+- Core
+  - Compra
+  - Catálogo
+  - Pagamento
+  - Entrega
+  - Faturamento
+- Supporting
+  - Estoque
+- Generic
+  - Notificação
+  - Promoções
+  - Chat
+
+## Publish/Subscribe
+
+Arquitetura de Software
+
+[Publish/Subscribe](https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern)
