@@ -50,6 +50,9 @@ npm install
 # Iniciar typescript
 $ npx tsc --init
 
+# Comando para verificar se existe error de typescript
+$ npx tsc --noEmit
+
 ```
 
 ## Requisitos
