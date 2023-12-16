@@ -9,7 +9,9 @@
     // Permitir criar interfaces com objeto vazio {}
     "@typescript-eslint/no-empty-interface": "off",
     // Permitir criar funções com objeto vazio {}
-    "@typescript-eslint/no-empty-function": "off"
+    "@typescript-eslint/no-empty-function": "off",
+    // Permitir iniciar uma classe sem atribuir a uma constante new Class ( const class = new Class())
+    "no-new": "off"
   },
   "env": {
     "vitest-globals/env": true
